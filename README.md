@@ -1,0 +1,647 @@
+[portal_do_segurado_f_nix_seguros (19).html](https://github.com/user-attachments/files/33895467/portal_do_segurado_f_nix_seguros.19.html)
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Segurado - Fênix Seguros</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans">
+
+    <!-- Custom Modal Replacement for alert/confirm -->
+    <div id="customAlert" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
+            <div id="alertIcon" class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-circle-info"></i>
+            </div>
+            <p id="alertMessage" class="text-sm font-medium text-slate-700"></p>
+            <div id="alertActions" class="flex justify-center gap-3 pt-2">
+                <button onclick="closeCustomAlert()" class="w-full bg-slate-950 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-slate-800 transition">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Principal -->
+    <header class="bg-slate-950 text-white shadow-md sticky top-0 z-40 border-b border-slate-800">
+        <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <!-- Escudo Fênix Seguros em Azul -->
+                <div class="w-10 h-10 bg-slate-900 border border-sky-500/40 rounded-xl flex items-center justify-center shadow-md relative p-1.5 overflow-hidden">
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <path d="M50 5 L85 20 V50 C85 72 68 88 50 95 C32 88 15 72 15 50 V20 Z" fill="#0f172a" stroke="#0284c7" stroke-width="4" />
+                        <path d="M28 32 H46 V42 H36 V50 H44 V60 H36 V75 H28 Z" fill="#38bdf8" />
+                        <path d="M52 30 C68 30 72 38 72 44 C72 54 58 56 58 62 C58 66 64 68 72 66 V76 C54 78 48 70 48 62 C48 50 62 48 62 42 C62 38 58 38 52 38 Z" fill="#0284c7" />
+                        <path d="M50 48 L62 62 H54 V78 H46 V62 H38 Z" fill="#38bdf8" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="font-extrabold text-lg tracking-wider uppercase block leading-none text-white font-sans">Fênix <span class="text-sky-400 font-normal">Seguros</span></span>
+                    <span class="text-[9px] tracking-widest uppercase text-sky-400 font-medium italic">Feito para você</span>
+                </div>
+            </div>
+            <button onclick="toggleMode()" id="modeToggleBtn" class="bg-slate-900 hover:bg-slate-800 text-xs px-3 py-1.5 rounded-lg font-medium transition border border-slate-700 text-slate-200 flex items-center gap-2 cursor-pointer shadow-sm">
+                <i class="fa-solid fa-user-gear text-sky-400 text-xs"></i> <span id="btnText">Área Corretor</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Container Principal (Mais compacto: max-w-3xl) -->
+    <main class="flex-grow max-w-3xl w-full mx-auto p-4 sm:p-5">
+
+        <!-- ÁREA DO CLIENTE -->
+        <div id="clientArea" class="space-y-5">
+            <div id="loginCard" class="bg-white rounded-2xl shadow-md p-6 sm:p-8 border border-slate-200/80 text-center max-w-md mx-auto my-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-slate-900 via-sky-500 to-slate-900"></div>
+                <div class="w-16 h-16 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner border border-sky-100">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 class="text-xl font-extrabold text-slate-900 mb-0.5">Portal do Segurado</h2>
+                <p class="text-[11px] text-sky-600 font-semibold italic mb-4">Feito para você</p>
+                <p class="text-xs text-slate-500 mb-5">Digite seu CPF para consultar suas apólices e assistência 24h.</p>
+                
+                <form onsubmit="event.preventDefault(); loginClient();" class="space-y-4">
+                    <div>
+                        <input type="text" id="loginCpf" placeholder="000.000.000-00" oninput="applyCpfMask(this)" maxlength="14" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none text-center font-mono text-sm font-semibold tracking-wider bg-slate-50">
+                    </div>
+                    <button type="submit" class="w-full bg-slate-950 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-right-to-bracket text-sky-400"></i> Acessar Apólices
+                    </button>
+                </form>
+                <p class="text-[11px] text-slate-400 mt-4">CPF de Teste: <span class="font-mono font-bold text-slate-600">111.111.111-11</span></p>
+            </div>
+
+            <div id="clientDashboard" class="hidden space-y-4">
+                <!-- Cabeçalho Expandido do Cliente (Nome à esquerda, Logomarca grande ao centro/direita, Sair à direita) -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-md">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <!-- LADO ESQUERDO: Dados do Cliente -->
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-extrabold tracking-wider text-sky-600 bg-sky-50 px-2.5 py-1 rounded-md uppercase border border-sky-100">Segurado Fênix</span>
+                            <h2 id="clientNameDisplay" class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Nome do Cliente</h2>
+                            <p id="clientCpfDisplay" class="text-xs text-slate-500 font-mono mt-0.5">CPF: 000.000.000-00</p>
+                        </div>
+
+                        <!-- CENTRO / À FRENTE DO NOME: Logomarca da Seguradora (Bem Grande) -->
+                        <div id="clientLogoContainer" class="flex items-center justify-center my-2 sm:my-0 sm:mx-auto max-w-[220px] sm:max-w-[280px]">
+                            <!-- A logo é injetada via JavaScript aqui -->
+                        </div>
+
+                        <!-- LADO DIREITO: Botão Sair -->
+                        <button onclick="logoutClient()" class="text-xs text-slate-500 hover:text-red-600 font-semibold bg-slate-100 hover:bg-red-50 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer border border-slate-200 shrink-0 self-end sm:self-auto">
+                            <i class="fa-solid fa-right-from-bracket text-xs"></i> Sair
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lista de Cartões das Apólices (Agora mais próxima e integrada) -->
+                <div id="clientPoliciesList" class="space-y-4"></div>
+
+                <!-- Card Suporte Fênix Seguros (Moderno e Compacto) -->
+                <div class="bg-slate-900 text-white rounded-2xl p-3.5 shadow-md border border-slate-800 flex items-center justify-between gap-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-emerald-500/15 text-emerald-400 rounded-lg flex items-center justify-center text-base border border-emerald-500/20 shrink-0">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs text-white">Atendimento Fênix Seguros</h4>
+                            <p class="text-[10px] text-slate-400">Dúvidas ou sinistros? Fale com seu corretor.</p>
+                        </div>
+                    </div>
+                    <a href="https://wa.me/5517991706101?text=Olá,%20sou%20cliente%20Fênix%20Seguros%20e%20preciso%20de%20atendimento." target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition text-center whitespace-nowrap shadow-sm flex items-center gap-1.5">
+                        <i class="fa-brands fa-whatsapp"></i> Contato
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÁREA DO CORRETOR (ADMIN) -->
+        <div id="adminArea" class="hidden space-y-5">
+            <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200/80">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Gestão de Apólices</h2>
+                        <p class="text-xs text-slate-500">Cadastre apólices, adicione links/imagens de logos e anexos PDF.</p>
+                    </div>
+                    <button onclick="openModal()" class="bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-plus text-sky-400"></i> Nova Apólice
+                    </button>
+                </div>
+
+                <div class="mb-4">
+                    <input type="text" id="searchPolicy" onkeyup="filterPolicies()" placeholder="Pesquisar por cliente, CPF ou veículo..." class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none text-xs">
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-slate-500 bg-slate-50/60">
+                                <th class="p-2.5 font-bold uppercase">Cliente / CPF</th>
+                                <th class="p-2.5 font-bold uppercase">Veículo / Objeto</th>
+                                <th class="p-2.5 font-bold uppercase">Seguradora</th>
+                                <th class="p-2.5 font-bold uppercase">Nº Apólice</th>
+                                <th class="p-2.5 font-bold uppercase">Vigência</th>
+                                <th class="p-2.5 font-bold uppercase text-center">PDF</th>
+                                <th class="p-2.5 font-bold uppercase text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Form (Editar/Cadastrar) -->
+    <div id="policyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto border border-slate-100">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 id="modalTitle" class="font-bold text-base text-slate-900">Cadastrar Apólice</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 cursor-pointer"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            <form id="policyForm" onsubmit="savePolicy(event)" class="space-y-3.5 text-xs">
+                <input type="hidden" id="policyIndex">
+                <input type="hidden" id="formPdfData">
+                <input type="hidden" id="formPdfName">
+                <input type="hidden" id="formLogoData">
+                
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Nome do Cliente</label>
+                    <input type="text" id="formName" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">CPF do Cliente</label>
+                        <input type="text" id="formCpf" placeholder="000.000.000-00" oninput="applyCpfMask(this)" maxlength="14" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Veículo / Objeto Segurado</label>
+                        <input type="text" id="formVehicle" placeholder="Ex: Corolla Cross 2.0 / Honda Civic" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none font-medium text-slate-800">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Seguradora</label>
+                        <select id="formInsurer" onchange="updateSosDefault()" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none bg-white font-medium">
+                            <option value="Mapfre">Mapfre Seguros</option>
+                            <option value="Bradesco">Bradesco Seguros</option>
+                            <option value="Allianz">Allianz Seguros</option>
+                            <option value="HDI">HDI Seguros</option>
+                            <option value="Yelum">Yelum Seguros</option>
+                            <option value="Porto Seguro">Porto Seguro</option>
+                            <option value="Azul">Azul Seguros</option>
+                            <option value="Tokio Marine">Tokio Marine</option>
+                            <option value="SulAmérica">SulAmérica</option>
+                            <option value="Zurich">Zurich Seguros</option>
+                            <option value="Suhai">Suhai Seguradora</option>
+                            <option value="Outra">Outra Seguradora</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Ramo / Tipo</label>
+                        <input type="text" id="formType" placeholder="Ex: Auto / Residencial" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Nº da Apólice</label>
+                        <input type="text" id="formNumber" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none font-mono">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Vigência Até</label>
+                        <input type="date" id="formValidity" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">WhatsApp / SOS Seguradora (DDD + número)</label>
+                    <input type="text" id="formSosPhone" placeholder="5511999999999" required class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                </div>
+
+                <!-- Campo para Link da Logomarca (URL Direct) -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                    <label class="block font-bold text-slate-800 uppercase text-[11px]"><i class="fa-solid fa-link text-sky-500 mr-1"></i> Link / URL da Logo da Seguradora (Opcional)</label>
+                    <input type="url" id="formLogoUrl" placeholder="https://exemplo.com/logo-mapfre.png" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    <p class="text-[10px] text-slate-500">Cole aqui o endereço da imagem em PNG ou use o campo de upload de arquivo abaixo.</p>
+                </div>
+
+                <!-- Upload de Arquivo de Imagem da Logo -->
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Ou Envie o Arquivo da Logo (PNG / JPG / SVG)</label>
+                    <input type="file" id="formLogoFile" accept="image/png, image/jpeg, image/svg+xml" onchange="handleLogoUpload(event)" class="w-full text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer">
+                    <p id="logoStatusText" class="text-[10px] text-slate-400 mt-1 italic"></p>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Anexo da Apólice (Arquivo PDF)</label>
+                    <input type="file" id="formPdfFile" accept="application/pdf" onchange="handlePdfUpload(event)" class="w-full text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer">
+                    <p id="pdfStatusText" class="text-[10px] text-slate-400 mt-1 italic"></p>
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal()" class="px-3.5 py-2 border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 cursor-pointer">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-slate-950 text-white rounded-xl font-bold hover:bg-slate-800 cursor-pointer">Salvar Apólice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script de Funcionamento Completo sem Erros -->
+    <script>
+        // SVG Logos com tamanhos ajustados para ficarem maiores
+        const svgLogos = {
+            "Mapfre": `<svg class="h-20 sm:h-24 w-auto" viewBox="0 0 200 45" fill="none"><g fill="#D81E05"><path d="M12 8C7.58 8 4 11.58 4 16V30H12V18H18V30H26V18H32V30H40V16C40 11.58 36.42 8 32 8H12Z"/><path d="M52 8L42 30H50L52 25H60L62 30H70L60 8H52ZM54 19L58 19L59 21H53L54 19Z"/><path d="M74 8V30H82V20H90C94.42 20 98 16.42 98 12C98 7.58 94.42 8 90 8H74ZM82 15V13H89C90.1 13 91 13.9 91 15C91 16.1 90.1 17 89 17H82V15Z"/><path d="M102 8V30H110V21H120V16H110V13H122V8H102Z"/><path d="M126 8V30H134V22L142 30H152L142 20C146 19 148 16 148 13C148 9 144 8 140 8H126ZM134 13H139C140 13 141 14 141 15C141 16 140 17 139 17H134V13Z"/><path d="M154 8V30H174V25H162V21H172V16H162V13H174V8H154Z"/></g></svg>`,
+            "Bradesco": `<svg class="h-20 sm:h-24 w-auto" viewBox="0 0 220 45" fill="none"><path d="M10 8H35C45 8 52 13 52 21C52 26 48 29 43 31C50 33 54 37 54 43C54 52 45 56 34 56H10V8ZM23 24H33C38 24 41 22 41 19C41 16 38 14 33 14H23V24ZM23 46H35C40 46 43 44 43 40 C43 36 40 34 35 34H23V46Z" fill="#CC092F"/><text x="60" y="32" font-family="Arial, sans-serif" font-weight="bold" font-size="22" fill="#CC092F">Bradesco</text><text x="60" y="44" font-family="Arial, sans-serif" font-weight="600" font-size="11" fill="#666">SEGUROS</text></svg>`,
+            "Porto Seguro": `<svg class="h-20 sm:h-24 w-auto" viewBox="0 0 200 45" fill="none"><text x="5" y="26" font-family="'Arial Black', sans-serif" font-weight="900" font-size="22" fill="#00A3E0">PORTO</text><text x="5" y="40" font-family="Arial, sans-serif" font-weight="bold" font-size="12" fill="#003399" letter-spacing="3">SEGURO</text></svg>`,
+            "Allianz": `<svg class="h-20 sm:h-24 w-auto" viewBox="0 0 180 40" fill="none"><circle cx="18" cy="20" r="14" stroke="#00377B" stroke-width="3"/><path d="M12 26V14L18 26V14M24 14V26" stroke="#00377B" stroke-width="2.5" stroke-linecap="round"/><text x="40" y="27" font-family="Arial, sans-serif" font-weight="bold" font-size="20" fill="#00377B">Allianz</text></svg>`,
+            "HDI": `<svg class="h-20 sm:h-24 w-auto" viewBox="0 0 160 40" fill="none"><rect x="5" y="8" width="50" height="25" rx="4" fill="#008054"/><text x="12" y="27" font-family="'Arial Black', sans-serif" font-weight="900" font-size="18" fill="#FFFFFF">HDI</text><text x="62" y="26" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#008054">Seguros</text></svg>`,
+            "Tokio Marine": `<svg class="h-20 sm:h-24 w-auto" viewBox="0 0 210 40" fill="none"><path d="M5 10H30V16H20V32H12V16H5V10Z" fill="#006652"/><text x="35" y="26" font-family="Arial, sans-serif" font-weight="bold" font-size="18" fill="#006652">TOKIO MARINE</text></svg>`,
+            "Azul": `<svg class="h-20 sm:h-24 w-auto" viewBox="0 0 170 40" fill="none"><text x="5" y="28" font-family="'Arial Black', sans-serif" font-weight="900" font-size="24" fill="#0284C7">AZUL</text><text x="75" y="28" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#0F172A">SEGUROS</text></svg>`,
+            "SulAmérica": `<svg class="h-20 sm:h-24 w-auto" viewBox="0 0 200 40" fill="none"><text x="5" y="26" font-family="Arial, sans-serif" font-weight="bold" font-size="20" fill="#E85D04">SulAmérica</text></svg>`,
+            "Yelum": `<svg class="h-20 sm:h-24 w-auto" viewBox="0 0 160 40" fill="none"><text x="5" y="27" font-family="'Arial Black', sans-serif" font-weight="900" font-size="22" fill="#F59E0B">YELUM</text></svg>`,
+            "Suhai": `<svg class="h-20 sm:h-24 w-auto" viewBox="0 0 160 40" fill="none"><text x="5" y="27" font-family="'Arial Black', sans-serif" font-weight="900" font-size="22" fill="#DC2626">SUHAI</text></svg>`
+        };
+
+        const defaultSosPhones = {
+            "Mapfre": "551140040101",
+            "Bradesco": "551140042757",
+            "Allianz": "551140015000",
+            "HDI": "55118007015430",
+            "Yelum": "551140042115",
+            "Porto Seguro": "551130039303",
+            "Azul": "551140043700",
+            "Tokio Marine": "5511995789901",
+            "SulAmérica": "5511989060000",
+            "Zurich": "551128903900",
+            "Suhai": "551130030600",
+            "Outra": "5517991706101"
+        };
+
+        let policies = JSON.parse(localStorage.getItem('fenix_policies_v6')) || [
+            { name: "João Carlos Silva", cpf: "111.111.111-11", vehicle: "Toyota Corolla Cross XRE 2.0 2024", insurer: "Mapfre", type: "Seguro Automóvel", number: "349001283", validity: "2027-05-15", sosPhone: "551140040101", pdfData: null, pdfName: null, customLogo: null, logoUrl: null },
+            { name: "João Carlos Silva", cpf: "111.111.111-11", vehicle: "Residência Principal", insurer: "Bradesco", type: "Seguro Residencial", number: "77492019", validity: "2027-12-01", sosPhone: "551140042757", pdfData: null, pdfName: null, customLogo: null, logoUrl: null },
+            { name: "Maria Oliveira", cpf: "222.222.222-22", vehicle: "Honda HR-V EXL 1.5 Turbo 2023", insurer: "Porto Seguro", type: "Seguro Auto", number: "882019283", validity: "2027-10-10", sosPhone: "551130039303", pdfData: null, pdfName: null, customLogo: null, logoUrl: null }
+        ];
+
+        let currentRole = 'client';
+        let loggedClientCpf = null;
+        let selectedInsurer = null;
+
+        function applyCpfMask(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            input.value = value;
+        }
+
+        function showAlert(msg, confirmCallback = null) {
+            const modal = document.getElementById('customAlert');
+            const messageEl = document.getElementById('alertMessage');
+            const actionsEl = document.getElementById('alertActions');
+            
+            messageEl.innerText = msg;
+            
+            if (confirmCallback) {
+                actionsEl.innerHTML = `
+                    <button onclick="closeCustomAlert()" class="px-3.5 py-2 border border-slate-200 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-50">Cancelar</button>
+                    <button id="confirmBtn" class="px-3.5 py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700">Confirmar</button>
+                `;
+                document.getElementById('confirmBtn').onclick = () => {
+                    confirmCallback();
+                    closeCustomAlert();
+                };
+            } else {
+                actionsEl.innerHTML = `
+                    <button onclick="closeCustomAlert()" class="w-full bg-slate-950 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-slate-800 transition">OK</button>
+                `;
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('customAlert').classList.add('hidden');
+        }
+
+        function saveToStorage() {
+            try {
+                localStorage.setItem('fenix_policies_v6', JSON.stringify(policies));
+            } catch(e) {
+                showAlert('Atenção: O limite de memória do navegador foi atingido. Tente usar links de imagens em vez de uploads diretos de arquivos pesados.');
+            }
+        }
+
+        function toggleMode() {
+            currentRole = currentRole === 'client' ? 'admin' : 'client';
+            const clientArea = document.getElementById('clientArea');
+            const adminArea = document.getElementById('adminArea');
+            const btnText = document.getElementById('btnText');
+
+            if (currentRole === 'admin') {
+                clientArea.classList.add('hidden');
+                adminArea.classList.remove('hidden');
+                btnText.innerText = "Área Cliente";
+                renderAdminTable();
+            } else {
+                adminArea.classList.add('hidden');
+                clientArea.classList.remove('hidden');
+                btnText.innerText = "Área Corretor";
+                if (loggedClientCpf) {
+                    document.getElementById('loginCard').classList.add('hidden');
+                    document.getElementById('clientDashboard').classList.remove('hidden');
+                } else {
+                    document.getElementById('loginCard').classList.remove('hidden');
+                    document.getElementById('clientDashboard').classList.add('hidden');
+                }
+            }
+        }
+
+        function loginClient() {
+            const cpfInput = document.getElementById('loginCpf').value.trim();
+            if (!cpfInput) return showAlert('Por favor, digite o seu CPF.');
+
+            const cleanInput = cpfInput.replace(/\D/g, '');
+            const found = policies.find(p => p.cpf.replace(/\D/g, '') === cleanInput);
+
+            if (!found) return showAlert('Nenhuma apólice encontrada para este CPF. Use o CPF de teste: 111.111.111-11 ou cadastre uma nova apólice na Área Corretor.');
+
+            loggedClientCpf = found.cpf;
+            selectedInsurer = null;
+            document.getElementById('loginCard').classList.add('hidden');
+            document.getElementById('clientDashboard').classList.remove('hidden');
+            document.getElementById('clientNameDisplay').innerText = found.name;
+            document.getElementById('clientCpfDisplay').innerText = "CPF: " + found.cpf;
+            renderImmersiveCards(found.cpf);
+        }
+
+        function logoutClient() {
+            loggedClientCpf = null;
+            selectedInsurer = null;
+            document.getElementById('loginCpf').value = '';
+            document.getElementById('clientDashboard').classList.add('hidden');
+            document.getElementById('loginCard').classList.remove('hidden');
+        }
+
+        function selectInsurerTab(insurerName) {
+            selectedInsurer = insurerName;
+            if (loggedClientCpf) {
+                renderImmersiveCards(loggedClientCpf);
+            }
+        }
+
+        function renderImmersiveCards(cpf) {
+            const cleanCpf = cpf.replace(/\D/g, '');
+            const userPolicies = policies.filter(p => p.cpf.replace(/\D/g, '') === cleanCpf);
+            const container = document.getElementById('clientPoliciesList');
+            const logoContainer = document.getElementById('clientLogoContainer');
+            
+            container.innerHTML = '';
+            if (logoContainer) logoContainer.innerHTML = '';
+
+            if (userPolicies.length === 0) return;
+
+            // Renderiza a logo principal em tamanho grande ao centro/direita
+            const primaryPol = userPolicies[0];
+            let logoSrc = primaryPol.logoUrl || primaryPol.customLogo;
+            let logoMarkup = '';
+
+            if (logoSrc) {
+                logoMarkup = `<img src="${logoSrc}" alt="${primaryPol.insurer}" class="h-16 sm:h-20 max-w-[220px] sm:max-w-[260px] object-contain drop-shadow-md transition-transform duration-300 hover:scale-105" onerror="this.onerror=null; this.parentElement.innerHTML=\`<span class='font-black text-slate-800 text-2xl tracking-wider uppercase'>${primaryPol.insurer}</span>\`;" />`;
+            } else if (svgLogos[primaryPol.insurer]) {
+                logoMarkup = svgLogos[primaryPol.insurer];
+            } else {
+                logoMarkup = `<span class="font-black text-slate-800 text-2xl sm:text-3xl tracking-wider uppercase">${primaryPol.insurer}</span>`;
+            }
+
+            if (logoContainer) {
+                logoContainer.innerHTML = logoMarkup;
+            }
+
+            userPolicies.forEach((pol) => {
+                const cleanPhone = pol.sosPhone.replace(/\D/g, '');
+                const waMessage = encodeURIComponent(`Olá, preciso de assistência 24h / guincho para o veículo ${pol.vehicle || 'cadastrado'} (Apólice nº ${pol.number}).`);
+                const waUrl = `https://wa.me/${cleanPhone}?text=${waMessage}`;
+
+                const pdfButton = pol.pdfData ? `
+                    <a href="${pol.pdfData}" download="${pol.pdfName || 'Apolice_Fenix_Seguros.pdf'}" class="bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs px-3.5 py-2 rounded-xl transition text-center border border-slate-200 shadow-sm flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-file-pdf text-red-500 text-sm"></i> Baixar Apólice PDF
+                    </a>
+                ` : `
+                    <span class="text-[11px] text-slate-400 italic self-center">PDF indisponível</span>
+                `;
+
+                // Renderiza o cartão de apólice mais próximo e compacto
+                container.innerHTML += `
+                    <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-md border border-slate-200/90 space-y-3">
+                        <!-- Detalhes do Veículo e Apólice -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div class="bg-slate-900 text-white rounded-2xl p-3.5 shadow-sm border border-slate-800 flex flex-col justify-center">
+                                <p class="text-[10px] uppercase font-bold text-sky-400 tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-car text-xs"></i> Veículo / Objeto Segurado
+                                </p>
+                                <p class="text-sm sm:text-base font-extrabold text-white mt-0.5 leading-snug">${pol.vehicle || 'Não especificado'}</p>
+                            </div>
+
+                            <div class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200 flex justify-between items-center">
+                                <div>
+                                    <p class="text-[10px] uppercase font-bold text-slate-400">Nº da Apólice</p>
+                                    <p class="text-xs font-mono font-bold text-slate-800 mt-0.5">${pol.number}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] uppercase font-bold text-slate-400">Vigência Até</p>
+                                    <p class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 mt-0.5 inline-block">${pol.validity}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação (PDF + Guincho) -->
+                        <div class="pt-2 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+                            ${pdfButton}
+                            <a href="${waUrl}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition text-center shadow-sm flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> Chamar Guincho / SOS 24h
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateSosDefault() {
+            const insurer = document.getElementById('formInsurer').value;
+            if (defaultSosPhones[insurer]) {
+                document.getElementById('formSosPhone').value = defaultSosPhones[insurer];
+            }
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            const statusText = document.getElementById('logoStatusText');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('formLogoData').value = e.target.result;
+                    statusText.innerText = "Arquivo de imagem carregado: " + file.name;
+                    statusText.className = "text-[10px] text-emerald-600 mt-1 font-semibold";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handlePdfUpload(event) {
+            const file = event.target.files[0];
+            const statusText = document.getElementById('pdfStatusText');
+            if (file) {
+                if (file.type !== "application/pdf") {
+                    showAlert("Por favor, selecione apenas arquivos PDF.");
+                    event.target.value = "";
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('formPdfData').value = e.target.result;
+                    document.getElementById('formPdfName').value = file.name;
+                    statusText.innerText = "PDF selecionado: " + file.name;
+                    statusText.className = "text-[10px] text-emerald-600 mt-1 font-semibold";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function renderAdminTable(filter = '') {
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = '';
+            const filtered = policies.filter(p => 
+                p.name.toLowerCase().includes(filter.toLowerCase()) || 
+                p.cpf.includes(filter) ||
+                (p.vehicle && p.vehicle.toLowerCase().includes(filter.toLowerCase()))
+            );
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-3 text-center text-slate-400 text-xs">Nenhuma apólice encontrada.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach((pol, index) => {
+                const pdfBadge = pol.pdfData ? 
+                    `<a href="${pol.pdfData}" download="${pol.pdfName || 'Apolice.pdf'}" title="Baixar PDF" class="text-red-500 hover:text-red-700 text-sm"><i class="fa-solid fa-file-pdf"></i></a>` : 
+                    `<span class="text-slate-300 text-xs">-</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-2.5">
+                            <div class="font-bold text-slate-900">${pol.name}</div>
+                            <div class="text-[11px] text-slate-400 font-mono">${pol.cpf}</div>
+                        </td>
+                        <td class="p-2.5 font-semibold text-xs text-slate-800">
+                            <i class="fa-solid fa-car text-sky-500 mr-1"></i> ${pol.vehicle || 'N/A'}
+                        </td>
+                        <td class="p-2.5">
+                            <span class="font-bold text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">${pol.insurer}</span>
+                            <div class="text-[10px] text-slate-500 mt-0.5">${pol.type}</div>
+                        </td>
+                        <td class="p-2.5 font-mono font-bold text-slate-700 text-xs">${pol.number}</td>
+                        <td class="p-2.5 text-xs text-slate-600">${pol.validity}</td>
+                        <td class="p-2.5 text-center">${pdfBadge}</td>
+                        <td class="p-2.5 text-right space-x-1.5">
+                            <button onclick="editPolicy(${index})" class="text-sky-600 hover:text-sky-800 p-1 cursor-pointer"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deletePolicy(${index})" class="text-red-600 hover:text-red-800 p-1 cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterPolicies() { renderAdminTable(document.getElementById('searchPolicy').value); }
+
+        function openModal() {
+            document.getElementById('modalTitle').innerText = "Cadastrar Apólice";
+            document.getElementById('policyForm').reset();
+            document.getElementById('policyIndex').value = "";
+            document.getElementById('formPdfData').value = "";
+            document.getElementById('formPdfName').value = "";
+            document.getElementById('formLogoData').value = "";
+            document.getElementById('formLogoUrl').value = "";
+            document.getElementById('pdfStatusText').innerText = "";
+            document.getElementById('logoStatusText').innerText = "";
+            updateSosDefault();
+            document.getElementById('policyModal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('policyModal').classList.add('hidden'); }
+
+        function savePolicy(event) {
+            event.preventDefault();
+            const index = document.getElementById('policyIndex').value;
+            const newPol = {
+                name: document.getElementById('formName').value,
+                cpf: document.getElementById('formCpf').value,
+                vehicle: document.getElementById('formVehicle').value,
+                insurer: document.getElementById('formInsurer').value,
+                type: document.getElementById('formType').value,
+                number: document.getElementById('formNumber').value,
+                validity: document.getElementById('formValidity').value,
+                sosPhone: document.getElementById('formSosPhone').value,
+                logoUrl: document.getElementById('formLogoUrl').value.trim() || null,
+                pdfData: document.getElementById('formPdfData').value || null,
+                pdfName: document.getElementById('formPdfName').value || null,
+                customLogo: document.getElementById('formLogoData').value || null
+            };
+            
+            if (index === "") policies.push(newPol);
+            else policies[index] = newPol;
+
+            saveToStorage();
+            closeModal();
+            renderAdminTable();
+            showAlert('Apólice salva com sucesso!');
+        }
+
+        function editPolicy(index) {
+            const pol = policies[index];
+            document.getElementById('modalTitle').innerText = "Editar Apólice";
+            document.getElementById('policyIndex').value = index;
+            document.getElementById('formName').value = pol.name;
+            document.getElementById('formCpf').value = pol.cpf;
+            document.getElementById('formVehicle').value = pol.vehicle || '';
+            document.getElementById('formInsurer').value = pol.insurer;
+            document.getElementById('formType').value = pol.type;
+            document.getElementById('formNumber').value = pol.number;
+            document.getElementById('formValidity').value = pol.validity;
+            document.getElementById('formSosPhone').value = pol.sosPhone;
+            document.getElementById('formLogoUrl').value = pol.logoUrl || '';
+            document.getElementById('formPdfData').value = pol.pdfData || '';
+            document.getElementById('formPdfName').value = pol.pdfName || '';
+            document.getElementById('formLogoData').value = pol.customLogo || '';
+            
+            const pdfStatusText = document.getElementById('pdfStatusText');
+            if (pol.pdfName) {
+                pdfStatusText.innerText = "PDF atual: " + pol.pdfName;
+                pdfStatusText.className = "text-[10px] text-sky-600 mt-1 font-semibold";
+            } else {
+                pdfStatusText.innerText = "";
+            }
+
+            const logoStatusText = document.getElementById('logoStatusText');
+            if (pol.customLogo) {
+                logoStatusText.innerText = "Arquivo de imagem personalizado presente.";
+                logoStatusText.className = "text-[10px] text-emerald-600 mt-1 font-semibold";
+            } else {
+                logoStatusText.innerText = "";
+            }
+
+            document.getElementById('policyModal').classList.remove('hidden');
+        }
+
+        function deletePolicy(index) {
+            showAlert("Tem certeza que deseja excluir esta apólice?", () => {
+                policies.splice(index, 1);
+                saveToStorage();
+                renderAdminTable();
+            });
+        }
+    </script>
+</body>
+</html>
